@@ -28,8 +28,6 @@ public class Matrix2D {
     }
 
 
-
-
     public int getRowNum(){
         return this.matrix.length;
     }
@@ -50,8 +48,8 @@ public class Matrix2D {
 
     /**
      * 构造零矩阵
-     * @param rowNum
-     * @param columnNum
+     * @param rowNum 行数
+     * @param columnNum 列数
      */
     public Matrix2D(int rowNum, int columnNum) {
         double[][] m = new double[rowNum][columnNum];
@@ -88,8 +86,8 @@ public class Matrix2D {
 
     /**
      * 初始化为零矩阵
-     * @param rowNum
-     * @param columnNum
+     * @param rowNum 行数
+     * @param columnNum 列数
      */
     public void init(int rowNum, int columnNum) {
         double[][] m = new double[rowNum][columnNum];
@@ -99,7 +97,7 @@ public class Matrix2D {
 
     /**
      * 获取最大值
-     * @return
+     * @return 最大的数
      */
     public double getMax() {
         double max = this.matrix[0][0];
@@ -112,7 +110,7 @@ public class Matrix2D {
 
     /**
      * 获取最小值
-     * @return
+     * @return 最小的数
      */
     public double getMin() {
         double min = this.matrix[0][0];
@@ -126,7 +124,7 @@ public class Matrix2D {
 
     /**
      * 获取最长指
-     * @return
+     * @return 长度最长的数
      */
     public double getLongest() {
         int longest = 0;
@@ -162,7 +160,7 @@ public class Matrix2D {
 
     /**
      * 保存
-     * @param filePath
+     * @param filePath 路径
      */
     public void save(String filePath) {
         FileWriter writer = null;
@@ -190,8 +188,8 @@ public class Matrix2D {
 
     /**
      * 获取某行
-     * @param rowIndex
-     * @return
+     * @param rowIndex 索引
+     * @return 数组
      */
     public double[] getRow(int rowIndex) {
         if (rowIndex < this.matrix.length) {
@@ -201,8 +199,8 @@ public class Matrix2D {
 
     /**
      * 获取某列
-     * @param columnIndex
-     * @return
+     * @param columnIndex 索引
+     * @return 数组
      */
     public double[] getColumn(int columnIndex) {
         int rowCount = this.matrix.length;
@@ -216,7 +214,7 @@ public class Matrix2D {
 
     /**
      * 转为com.google.gson.JsonArray;
-     * @return
+     * @return  com.google.gson.JsonArray
      */
     public JsonArray toJsonArray() {
         Gson gson = new Gson();
@@ -227,11 +225,11 @@ public class Matrix2D {
     /**
      * 根据左上角索引坐标和右下角索引坐标获取子矩阵
      *
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @return
+     * @param x1 左上角行下标
+     * @param y1 左上角列下标
+     * @param x2 右下角行下标
+     * @param y2 右下角列下标
+     * @return 新矩阵Matrix2D
      */
     public Matrix2D getSubMatrix(int x1, int y1, int x2, int y2) {
         int rowCount = x2 - x1;
@@ -261,7 +259,7 @@ public class Matrix2D {
      *                       - 表示连续，3-7表示匹配 3，4，5，6行
      *                       * 匹配数字之前或之后的所有，*-3表示匹配 0，1，2行，3-*表示匹配 3，4，5，6.....直到最后一行
      *                       *-3,4-6,7,8-*表示匹配 0，1，2，4，5，7，8，9，10，11，12......到最后一行
-     * @return
+     * @return Matrix2D
      */
     public Matrix2D getSubRowToMatrix(String indexRowFormat) throws IndexIllegalException {
         Integer[] indexIntegers = analysisComplexIndex(indexRowFormat, this.matrix.length);
@@ -276,9 +274,9 @@ public class Matrix2D {
     /**
      * 分析复杂的子矩阵索引规则，返回所有行下标
      *
-     * @param complexIndex
-     * @return
-     * @throws IndexIllegalException
+     * @param complexIndex 复制字符串
+     * @return 整型下标数组
+     * @throws IndexIllegalException 索引字符串不符合规则异常
      */
     private Integer[] analysisComplexIndex(String complexIndex, int num) throws IndexIllegalException {
 
@@ -315,8 +313,8 @@ public class Matrix2D {
     /**
      * 判断输入的复制的子矩阵匹配规则是否合法
      *
-     * @param complex
-     * @return
+     * @param complex 复制字符串
+     * @return 正则表达式是否匹配
      */
     private boolean isLegal(String complex) {
         String s = "^(\\d+-\\d+|\\d+-\\*|\\*-\\d+|\\d+)$";
@@ -329,8 +327,8 @@ public class Matrix2D {
     /**
      * 根据列索引获取子矩阵
      *
-     * @param indexColumnFormat
-     * @return
+     * @param indexColumnFormat 正则匹配表达式
+     * @return 矩阵Matrix2D
      */
     public Matrix2D getSubColumnToMatrix(String indexColumnFormat) throws IndexIllegalException {
         Integer[] indexIntegers = analysisComplexIndex(indexColumnFormat, this.matrix[0].length);
@@ -345,8 +343,8 @@ public class Matrix2D {
 
     /**
      * 替换某行数据
-     * @param index
-     * @param data
+     * @param index 索引
+     * @param data 行数据
      */
     public void replaceRow(int index, double[] data) {
         this.matrix[index] = data;
@@ -354,8 +352,8 @@ public class Matrix2D {
 
     /**
      * 替换某列数据
-     * @param index
-     * @param data
+     * @param index 索引
+     * @param data 列数据
      */
     public void replaceColumn(int index, double[] data) {
         for (int i = 0; i < this.matrix.length; i++) {
@@ -369,7 +367,7 @@ public class Matrix2D {
     /**
      * 矩阵转置
      *
-     * @returnt
+     * @return 返回二维数组
      */
     public double[][] transpose() {
         double[][] result_arr = new double[this.matrix[0].length][this.matrix.length];
@@ -385,12 +383,12 @@ public class Matrix2D {
 
     /**
      * 插入行
-     * @param index
-     * @param row
-     * @throws Throwable
+     * @param index 索引
+     * @param row 列数组数据
+     * @throws Exception 长度不一致异常
      */
-    public void insertRow(int index, double[] row) throws Throwable {
-        if (row.length != this.matrix[0].length) throw new Throwable("长度不一致");
+    public void insertRow(int index, double[] row) throws Exception {
+        if (row.length != this.matrix[0].length) throw new Exception("长度不一致");
         double[][] re = new double[this.matrix.length + 1][this.matrix[0].length];
         for (int i = 0; i < re.length; i++) {
             if (i < index) {
@@ -406,12 +404,12 @@ public class Matrix2D {
 
     /**
      * 插入列
-     * @param index
-     * @param column
-     * @throws Throwable
+     * @param index 索引
+     * @param column 列数组数据
+     * @throws Exception 长度不一致异常
      */
-    public void insertColumn(int index, double[] column) throws Throwable {
-        if (column.length != this.matrix.length) throw new Throwable("长度不一致");
+    public void insertColumn(int index, double[] column) throws Exception {
+        if (column.length != this.matrix.length) throw new Exception("长度不一致");
         double[][] re = new double[this.matrix.length][this.matrix[0].length + 1];
         for (int i = 0; i < re.length; i++) {
             for (int j = 0; j < re[i].length; j++) {
@@ -428,7 +426,7 @@ public class Matrix2D {
 
     /**
      * 移除列
-     * @param index
+     * @param index 索引
      */
     public void removeColumn(int index) {
         double[][] re = new double[this.matrix.length][this.matrix[0].length - 1];
@@ -445,7 +443,7 @@ public class Matrix2D {
 
     /**
      * 移除行
-     * @param index
+     * @param index 索引
      */
     public void removeRow(int index) {
         double[][] re = new double[this.matrix.length - 1][this.matrix[0].length];
