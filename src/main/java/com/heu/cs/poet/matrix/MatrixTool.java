@@ -7,7 +7,6 @@ package com.heu.cs.poet.matrix;
  * @create 2017-12-02 12:53
  */
 public class MatrixTool {
-
     public boolean isZero(double[] doubles) {
         boolean flag = true;
         for (double d : doubles) {
@@ -32,6 +31,13 @@ public class MatrixTool {
     }
 
 
+    /**
+     * 两个矩阵加法
+     * @param m1 第一个矩阵
+     * @param m2 第二个矩阵
+     * @return 返回新的矩阵
+     * @throws Exception 长度不一致异常
+     */
     public Matrix2D addition(Matrix2D m1,Matrix2D m2) throws Exception {
         int rowCount=m1.getRowNum();
         int columnCount=m1.getColumnNum();
@@ -46,7 +52,13 @@ public class MatrixTool {
     }
 
 
-
+    /**
+     * 两个矩阵减法
+     * @param m1 第一个矩阵
+     * @param m2 第二个矩阵
+     * @return 返回新的矩阵
+     * @throws Exception 长度不一致异常
+     */
     public Matrix2D subtraction(Matrix2D m1,Matrix2D m2) throws Exception {
         int rowCount=m1.getRowNum();
         int columnCount=m1.getColumnNum();
@@ -61,6 +73,13 @@ public class MatrixTool {
     }
 
 
+    /**
+     * 两个矩阵内积
+     * @param m1 第一个矩阵
+     * @param m2 第二个矩阵
+     * @return 返回新的矩阵
+     * @throws Exception 长度不一致异常
+     */
     public Matrix2D multiplication(Matrix2D m1,Matrix2D m2) throws Exception {
         int rn1=m1.getRowNum();
         int cn1=m1.getColumnNum();
@@ -77,7 +96,12 @@ public class MatrixTool {
     }
 
 
-
+    /**
+     * 两个数组内积
+     * @param a 第一个数组
+     * @param b 第二个数组
+     * @return 返回double数据
+     */
     public double mutlipAdd(double[] a,double[] b){
         double d=0;
         for (int i = 0; i < a.length; i++) {

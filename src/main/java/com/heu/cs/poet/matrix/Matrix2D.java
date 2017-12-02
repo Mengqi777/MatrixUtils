@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,12 +48,21 @@ public class Matrix2D {
         this.matrix = matrix;
     }
 
+    /**
+     * 构造零矩阵
+     * @param rowNum
+     * @param columnNum
+     */
     public Matrix2D(int rowNum, int columnNum) {
         double[][] m = new double[rowNum][columnNum];
         this.setMatrix(m);
         this.toZero();
     }
 
+
+    /**
+     * 将矩阵置为为零矩阵
+     */
     public void toZero() {
         for (int i = 0; i < this.matrix.length; i++) {
             for (int j = 0; j < this.matrix[i].length; j++) {
@@ -63,12 +71,36 @@ public class Matrix2D {
         }
     }
 
+
+    /**
+     * 将矩阵置为对角矩阵
+     */
+    public void toDiagonal(){
+        this.toZero();
+        for (int i = 0; i < this.matrix.length; i++) {
+            for (int j = 0; j < this.matrix[i].length; j++) {
+                if(i==j)
+                this.matrix[i][j] = 1;
+            }
+        }
+    }
+
+
+    /**
+     * 初始化为零矩阵
+     * @param rowNum
+     * @param columnNum
+     */
     public void init(int rowNum, int columnNum) {
         double[][] m = new double[rowNum][columnNum];
         this.setMatrix(m);
         this.toZero();
     }
 
+    /**
+     * 获取最大值
+     * @return
+     */
     public double getMax() {
         double max = this.matrix[0][0];
         for (double[] doubles : this.matrix) {
@@ -78,6 +110,10 @@ public class Matrix2D {
         return max;
     }
 
+    /**
+     * 获取最小值
+     * @return
+     */
     public double getMin() {
         double min = this.matrix[0][0];
         for (double[] doubles : this.matrix) {
@@ -87,6 +123,11 @@ public class Matrix2D {
         return min;
     }
 
+
+    /**
+     * 获取最长指
+     * @return
+     */
     public double getLongest() {
         int longest = 0;
         int tagi = 0;
@@ -103,6 +144,10 @@ public class Matrix2D {
         return this.matrix[tagi][tagj];
     }
 
+
+    /**
+     * 打印
+     */
     public void print() {
         double longest = this.getLongest();
 
@@ -115,6 +160,10 @@ public class Matrix2D {
         System.out.println();
     }
 
+    /**
+     * 保存
+     * @param filePath
+     */
     public void save(String filePath) {
         FileWriter writer = null;
         try {
@@ -139,12 +188,22 @@ public class Matrix2D {
         }
     }
 
+    /**
+     * 获取某行
+     * @param rowIndex
+     * @return
+     */
     public double[] getRow(int rowIndex) {
         if (rowIndex < this.matrix.length) {
             return this.matrix[rowIndex];
         } else return null;
     }
 
+    /**
+     * 获取某列
+     * @param columnIndex
+     * @return
+     */
     public double[] getColumn(int columnIndex) {
         int rowCount = this.matrix.length;
         double[] column = new double[rowCount];
@@ -155,6 +214,10 @@ public class Matrix2D {
     }
 
 
+    /**
+     * 转为com.google.gson.JsonArray;
+     * @return
+     */
     public JsonArray toJsonArray() {
         Gson gson = new Gson();
         return gson.fromJson(gson.toJson(this.matrix), JsonArray.class);
@@ -280,10 +343,20 @@ public class Matrix2D {
     }
 
 
+    /**
+     * 替换某行数据
+     * @param index
+     * @param data
+     */
     public void replaceRow(int index, double[] data) {
         this.matrix[index] = data;
     }
 
+    /**
+     * 替换某列数据
+     * @param index
+     * @param data
+     */
     public void replaceColumn(int index, double[] data) {
         for (int i = 0; i < this.matrix.length; i++) {
             for (int j = 0; j < this.matrix[i].length; j++) {
@@ -310,6 +383,12 @@ public class Matrix2D {
     }
 
 
+    /**
+     * 插入行
+     * @param index
+     * @param row
+     * @throws Throwable
+     */
     public void insertRow(int index, double[] row) throws Throwable {
         if (row.length != this.matrix[0].length) throw new Throwable("长度不一致");
         double[][] re = new double[this.matrix.length + 1][this.matrix[0].length];
@@ -325,6 +404,12 @@ public class Matrix2D {
         this.setMatrix(re);
     }
 
+    /**
+     * 插入列
+     * @param index
+     * @param column
+     * @throws Throwable
+     */
     public void insertColumn(int index, double[] column) throws Throwable {
         if (column.length != this.matrix.length) throw new Throwable("长度不一致");
         double[][] re = new double[this.matrix.length][this.matrix[0].length + 1];
@@ -341,6 +426,10 @@ public class Matrix2D {
     }
 
 
+    /**
+     * 移除列
+     * @param index
+     */
     public void removeColumn(int index) {
         double[][] re = new double[this.matrix.length][this.matrix[0].length - 1];
         for (int i = 0; i < this.matrix.length; i++) {
@@ -354,6 +443,10 @@ public class Matrix2D {
     }
 
 
+    /**
+     * 移除行
+     * @param index
+     */
     public void removeRow(int index) {
         double[][] re = new double[this.matrix.length - 1][this.matrix[0].length];
         int count = 0;
