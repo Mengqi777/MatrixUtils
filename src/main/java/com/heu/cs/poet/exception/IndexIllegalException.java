@@ -7,7 +7,7 @@ package com.heu.cs.poet.exception;
  * @create 2017-12-01 14:50
  */
 public class IndexIllegalException extends Exception {
-    public IndexIllegalException(String msg){
+    public IndexIllegalException(String msg) {
         super(msg);
     }
 }

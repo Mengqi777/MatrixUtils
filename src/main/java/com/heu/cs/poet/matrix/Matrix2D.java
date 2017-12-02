@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,54 +22,38 @@ import java.util.regex.Pattern;
 public class Matrix2D {
 
 
-    private int rowNum;
-    private int columnNum;
-
     private double[][] matrix;
-
-    public int getRowNum() {
-        return rowNum;
-    }
-
-
-    public int getColumnNum() {
-        return columnNum;
-    }
-
 
     public double[][] getMatrix() {
         return matrix;
     }
 
+
+
+
+    public int getRowNum(){
+        return this.matrix.length;
+    }
+
+    public int getColumnNum()
+    {
+        return this.matrix[0].length;
+    }
+
     public void setMatrix(double[][] matrix) {
+        if (this.matrix != null) this.matrix = null;
         this.matrix = matrix;
-        if (matrix == null || matrix.length == 0) {
-            this.rowNum = 0;
-            this.columnNum = 0;
-        } else {
-            this.rowNum = matrix.length;
-            this.columnNum = matrix[0].length;
-        }
     }
 
     public Matrix2D(double[][] matrix) {
         this.matrix = matrix;
-        if (matrix == null || matrix.length == 0) {
-            this.rowNum = 0;
-            this.columnNum = 0;
-        } else {
-            this.rowNum = matrix.length;
-            this.columnNum = matrix[0].length;
-        }
     }
-
 
     public Matrix2D(int rowNum, int columnNum) {
         double[][] m = new double[rowNum][columnNum];
         this.setMatrix(m);
         this.toZero();
     }
-
 
     public void toZero() {
         for (int i = 0; i < this.matrix.length; i++) {
@@ -78,32 +63,65 @@ public class Matrix2D {
         }
     }
 
-
     public void init(int rowNum, int columnNum) {
         double[][] m = new double[rowNum][columnNum];
         this.setMatrix(m);
         this.toZero();
     }
 
+    public double getMax() {
+        double max = this.matrix[0][0];
+        for (double[] doubles : this.matrix) {
+            for (double d : doubles)
+                max = Math.max(d, max);
+        }
+        return max;
+    }
+
+    public double getMin() {
+        double min = this.matrix[0][0];
+        for (double[] doubles : this.matrix) {
+            for (double d : doubles)
+                min = Math.max(d, min);
+        }
+        return min;
+    }
+
+    public double getLongest() {
+        int longest = 0;
+        int tagi = 0;
+        int tagj = 0;
+        for (int i = 0; i < this.matrix.length; i++) {
+            for (int j = 0; j < this.matrix[i].length; j++) {
+                if ((this.matrix[i][j] + "").length() >= longest) {
+                    longest = (this.matrix[i][j] + "").length();
+                    tagi = i;
+                    tagj = j;
+                }
+            }
+        }
+        return this.matrix[tagi][tagj];
+    }
 
     public void print() {
-        for (int i = 0; i < this.rowNum; i++) {
-            for (int j = 0; j < this.columnNum; j++) {
-                System.out.print(this.matrix[i][j] + " ");
+        double longest = this.getLongest();
+
+        for (int i = 0; i < this.matrix.length; i++) {
+            for (int j = 0; j < this.matrix[i].length; j++) {
+                System.out.printf("%-" + ((longest + "").length() + 2) + "s", this.matrix[i][j]);
             }
             System.out.println();
         }
+        System.out.println();
     }
-
 
     public void save(String filePath) {
         FileWriter writer = null;
-
         try {
             writer = new FileWriter(new File(filePath));
             StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < this.rowNum; i++) {
-                for (int j = 0; j < this.columnNum; j++) {
+            for (int i = 0; i < this.matrix.length; i++) {
+                for (int j = 0; j < this.matrix[i].length; j++) {
                     sb.append(this.matrix[i][j]).append(",");
                 }
                 sb.append("\r\n");
@@ -119,11 +137,10 @@ public class Matrix2D {
                 e.printStackTrace();
             }
         }
-
     }
 
     public double[] getRow(int rowIndex) {
-        if (rowIndex < this.rowNum) {
+        if (rowIndex < this.matrix.length) {
             return this.matrix[rowIndex];
         } else return null;
     }
@@ -135,30 +152,6 @@ public class Matrix2D {
             column[i] = this.matrix[i][columnIndex];
         }
         return column;
-    }
-
-
-    public boolean isZero1D(double[] doubles) {
-        boolean flag = true;
-        for (double d : doubles) {
-            if (d != 0) {
-                flag = false;
-                break;
-            }
-        }
-        return flag;
-    }
-
-
-    public boolean isZero2D(double[][] doubles) {
-        boolean flag = true;
-        for (double[] d : doubles) {
-            if (!isZero1D(d)) {
-                flag = false;
-                break;
-            }
-        }
-        return flag;
     }
 
 
@@ -179,9 +172,20 @@ public class Matrix2D {
      */
     public Matrix2D getSubMatrix(int x1, int y1, int x2, int y2) {
         int rowCount = x2 - x1;
-        double[][] subMatrix = new double[rowCount][y2 - y1];
+        int columnCount = y2 - y1;
+        int[] rows = new int[rowCount];
+        int[] columns = new int[columnCount];
+        for (int i = x1; i < x2; i++) {
+            rows[i] = i;
+        }
+        for (int i = y1; i < y2; i++) {
+            columns[i] = i;
+        }
+        double[][] subMatrix = new double[rowCount][columnCount];
         for (int i = 0; i < rowCount; i++) {
-            subMatrix[i] = this.getRow(x1++);
+            for (int j = 0; j < columnCount; j++) {
+                subMatrix[i][j] = this.matrix[rows[i]][columns[j]];
+            }
         }
         return new Matrix2D(subMatrix);
     }
@@ -197,8 +201,8 @@ public class Matrix2D {
      * @return
      */
     public Matrix2D getSubRowToMatrix(String indexRowFormat) throws IndexIllegalException {
-        Integer[] indexIntegers = analysisComplexIndex(indexRowFormat);
-        double[][] db = new double[indexIntegers.length][this.columnNum];
+        Integer[] indexIntegers = analysisComplexIndex(indexRowFormat, this.matrix.length);
+        double[][] db = new double[indexIntegers.length][this.matrix[0].length];
         for (int i = 0; i < indexIntegers.length; i++) {
             db[i] = this.getRow(indexIntegers[i]);
         }
@@ -213,9 +217,12 @@ public class Matrix2D {
      * @return
      * @throws IndexIllegalException
      */
-    private Integer[] analysisComplexIndex(String complexIndex) throws IndexIllegalException {
-        if (!isLegal(complexIndex)) throw new IndexIllegalException("索引字符串不符合规则");
+    private Integer[] analysisComplexIndex(String complexIndex, int num) throws IndexIllegalException {
+
         String[] complexIndexs = complexIndex.split(",");
+        for (int i = 0; i < complexIndexs.length; i++) {
+            if (!isLegal(complexIndexs[i])) throw new IndexIllegalException("索引字符串不符合规则");
+        }
         List<Integer> list = new ArrayList<>();
         for (String s : complexIndexs) {
             if (s.length() == 1) list.add(Integer.parseInt(s));
@@ -226,7 +233,7 @@ public class Matrix2D {
                         list.add(i);
                     }
                 } else if (subs[1].equals("*")) {
-                    for (int i = Integer.parseInt(subs[0]); i < this.rowNum; i++) {
+                    for (int i = Integer.parseInt(subs[0]); i < num; i++) {
                         list.add(i);
                     }
                 } else {
@@ -249,7 +256,7 @@ public class Matrix2D {
      * @return
      */
     private boolean isLegal(String complex) {
-        String s = "(\\d+\\-\\d+|\\d+\\-\\*|\\*\\-\\d+|\\d+)+";
+        String s = "^(\\d+-\\d+|\\d+-\\*|\\*-\\d+|\\d+)$";
         Pattern pattern = Pattern.compile(s);
         Matcher matcher = pattern.matcher(complex);
         if (matcher.find()) return true;
@@ -263,8 +270,8 @@ public class Matrix2D {
      * @return
      */
     public Matrix2D getSubColumnToMatrix(String indexColumnFormat) throws IndexIllegalException {
-        Integer[] indexIntegers = analysisComplexIndex(indexColumnFormat);
-        double[][] db = new double[this.rowNum][indexIntegers.length];
+        Integer[] indexIntegers = analysisComplexIndex(indexColumnFormat, this.matrix[0].length);
+        double[][] db = new double[this.matrix.length][indexIntegers.length];
         Matrix2D matrix2D = new Matrix2D(db);
         for (int i = 0; i < indexIntegers.length; i++) {
             matrix2D.replaceColumn(i, this.getColumn(indexIntegers[i]));
@@ -274,54 +281,27 @@ public class Matrix2D {
 
 
     public void replaceRow(int index, double[] data) {
-
-        for (int i = 0; i < this.matrix[index].length; i++) {
-            this.matrix[index][i] = data[i];
-        }
+        this.matrix[index] = data;
     }
 
     public void replaceColumn(int index, double[] data) {
-        for (int i = 0; i < this.rowNum; i++) {
-            for (int j = 0; j < this.columnNum; j++) {
+        for (int i = 0; i < this.matrix.length; i++) {
+            for (int j = 0; j < this.matrix[i].length; j++) {
                 if (j == index) this.matrix[i][j] = data[i];
             }
         }
-    }
-
-    public double[][] removeRow(int index) {
-        double[][] re = new double[this.rowNum - 1][this.columnNum];
-        int count = 0;
-        for (int i = 0; i < this.rowNum; i++) {
-            if (i == index) continue;
-            re[count++] = this.getRow(i);
-        }
-        return re;
-    }
-
-    public double[][] removeColumn(int index) {
-        double[][] re = new double[this.rowNum][this.columnNum - 1];
-        int count = 0;
-        for (int i = 0; i < this.rowNum; i++) {
-            for (int j = 0; j < this.columnNum; j++) {
-
-                if (j == index) continue;
-                if (j < index) re[i][j] = this.matrix[i][j];
-                if (j > index) re[i][j - 1] = this.matrix[i][j];
-            }
-        }
-        return re;
     }
 
 
     /**
      * 矩阵转置
      *
-     * @return
+     * @returnt
      */
-    public double[][] trans() {
-        double[][] result_arr = new double[this.columnNum][this.rowNum];
+    public double[][] transpose() {
+        double[][] result_arr = new double[this.matrix[0].length][this.matrix.length];
         /*******进行元素倒置******/
-        for (int i = 0; i < this.rowNum; i++) {
+        for (int i = 0; i < this.matrix.length; i++) {
             for (int j = 0; j < this.matrix[i].length; j++) {
                 result_arr[j][i] = this.matrix[i][j]; //转置核心
             }
@@ -330,29 +310,10 @@ public class Matrix2D {
     }
 
 
-    public double[][] addOneRow(double[] row) {
-        double[][] re = new double[this.rowNum + 1][this.columnNum];
-        for (int i = 0; i < this.rowNum + 1; i++) {
-            if (i == this.rowNum) {
-                re[i] = row;
-            } else if (i < this.rowNum) {
-                re[i] = this.matrix[i];
-            }
-        }
-        return re;
-    }
-
-    public double[][] addOneColumn(double[] column) {
-        double[][] re = new double[this.rowNum][this.columnNum + 1];
-        Matrix2D trancMatrix2D = new Matrix2D(this.trans());
-        Matrix2D ma = new Matrix2D(trancMatrix2D.addOneRow(column));
-        return ma.trans();
-    }
-
-
-    public void insertOneRowToSelf(int index, double[] row) {
-        double[][] re = new double[this.rowNum + 1][this.columnNum];
-        for (int i = 0; i < this.rowNum + 1; i++) {
+    public void insertRow(int index, double[] row) throws Throwable {
+        if (row.length != this.matrix[0].length) throw new Throwable("长度不一致");
+        double[][] re = new double[this.matrix.length + 1][this.matrix[0].length];
+        for (int i = 0; i < re.length; i++) {
             if (i < index) {
                 re[i] = this.matrix[i];
             } else if (i == index) {
@@ -364,66 +325,43 @@ public class Matrix2D {
         this.setMatrix(re);
     }
 
-    public void insertOneColumnToSelf(int index, double[] column) {
-        double[][] re = new double[this.rowNum][this.columnNum + 1];
-        Matrix2D trancMatrix2D = new Matrix2D(this.trans());
-        trancMatrix2D.insertOneRowToSelf(index, column);
-        trancMatrix2D.trans();
-        this.setMatrix(trancMatrix2D.getMatrix());
-    }
-
-
-    public void addOneRowToSelf(double[] row) {
-        double[][] re = new double[this.rowNum + 1][this.columnNum];
-        for (int i = 0; i < this.rowNum + 1; i++) {
-            if (i == this.rowNum) {
-                re[i] = row;
-            } else if (i < this.rowNum) {
-                re[i] = this.matrix[i];
+    public void insertColumn(int index, double[] column) throws Throwable {
+        if (column.length != this.matrix.length) throw new Throwable("长度不一致");
+        double[][] re = new double[this.matrix.length][this.matrix[0].length + 1];
+        for (int i = 0; i < re.length; i++) {
+            for (int j = 0; j < re[i].length; j++) {
+                if (j < index) re[i][j] = this.matrix[i][j];
+                else if (j == index) re[i][j] = column[i];
+                else {
+                    re[i][j] = this.matrix[i][j - 1];
+                }
             }
         }
         this.setMatrix(re);
     }
 
-    public void addOneColumnToSelf(double[] column) {
-        double[][] re = new double[this.rowNum][this.columnNum + 1];
-        Matrix2D trancMatrix2D = new Matrix2D(this.trans());
-        Matrix2D ma = new Matrix2D(trancMatrix2D.addOneRow(column));
-        this.setMatrix(ma.trans());
-    }
 
-
-    public void removeSelfColumn(int index) {
-        double[][] re = new double[this.rowNum][this.columnNum - 1];
-        int count = 0;
-        for (int i = 0; i < this.rowNum; i++) {
-            for (int j = 0; j < this.columnNum; j++) {
+    public void removeColumn(int index) {
+        double[][] re = new double[this.matrix.length][this.matrix[0].length - 1];
+        for (int i = 0; i < this.matrix.length; i++) {
+            for (int j = 0; j < this.matrix[i].length; j++) {
                 if (j == index) continue;
                 if (j < index) re[i][j] = this.matrix[i][j];
                 if (j > index) re[i][j - 1] = this.matrix[i][j];
             }
         }
-
-        Matrix2D matrix2DTemp = new Matrix2D(re);
-        this.matrix = null;
-        this.matrix = matrix2DTemp.matrix;
-        this.columnNum = matrix2DTemp.columnNum;
-        this.rowNum = matrix2DTemp.rowNum;
+       this.setMatrix(re);
     }
 
 
-    public void removeSelfRow(int index) {
-        double[][] re = new double[this.rowNum - 1][this.columnNum];
+    public void removeRow(int index) {
+        double[][] re = new double[this.matrix.length - 1][this.matrix[0].length];
         int count = 0;
-        for (int i = 0; i < this.rowNum; i++) {
+        for (int i = 0; i < this.matrix.length; i++) {
             if (i == index) continue;
             re[count++] = this.getRow(i);
         }
-        Matrix2D matrix2DTemp = new Matrix2D(re);
-        this.matrix = null;
-        this.matrix = matrix2DTemp.matrix;
-        this.columnNum = matrix2DTemp.columnNum;
-        this.rowNum = matrix2DTemp.rowNum;
+        this.setMatrix(re);
     }
 
 
