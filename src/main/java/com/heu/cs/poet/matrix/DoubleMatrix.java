@@ -1,13 +1,6 @@
 package com.heu.cs.poet.matrix;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.heu.cs.poet.exception.IndexIllegalException;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.Random;
 
 /**
@@ -24,6 +17,12 @@ public class DoubleMatrix extends GenericMatrix implements Matrix {
     public DoubleMatrix(int m, int n) {
         super(m, n);
     }
+
+
+    public DoubleMatrix(Double[][] doubles) {
+        super(doubles);
+    }
+
 
     public void random(int m, int n, int start, int end) {
         matrix = null;
@@ -42,12 +41,12 @@ public class DoubleMatrix extends GenericMatrix implements Matrix {
         boolean flag = true;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                System.out.println("ceshi" + i);
                 if (!equal(matrix[i][j], 0)) {
                     flag = false;
                     break;
                 }
             }
+            if (!flag) break;
         }
         return flag;
     }
@@ -139,7 +138,7 @@ public class DoubleMatrix extends GenericMatrix implements Matrix {
      * @param b 第二个数组
      * @return 返回double数据
      */
-    public double mutlipAdd(Double[] a, Double[] b) {
+    private double mutlipAdd(Double[] a, Double[] b) {
         double d = 0;
         for (int i = 0; i < a.length; i++) {
             d += a[i] * b[i];

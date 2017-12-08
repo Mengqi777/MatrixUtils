@@ -1,5 +1,7 @@
 package com.heu.cs.poet.matrix;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.heu.cs.poet.exception.IndexIllegalException;
 
 import java.io.File;
@@ -7,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -360,4 +363,8 @@ public class GenericMatrix<E> extends AbstractMatrix implements Matrix {
     }
 
 
+    public JsonArray toJsonArray(){
+        Gson gson=new Gson();
+        return gson.fromJson(gson.toJson(matrix),JsonArray.class);
+    }
 }
